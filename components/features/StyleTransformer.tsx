@@ -641,8 +641,6 @@ export function StyleTransformer() {
                 </p>
               )}
             </div>
-
-
           </section>
         </div>
       </main>
