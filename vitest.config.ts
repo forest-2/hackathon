@@ -12,8 +12,6 @@ export default defineConfig({
       provider: "v8",
       reporter: ["text", "json", "html"],
       include: ["lib/**/*.ts", "lib/**/*.tsx"],
-      // Supabase wrappers are thin SDK adapters tested via integration — exclude from thresholds
-      exclude: ["lib/supabase/**"],
       thresholds: {
         lines: 80,
       },
