@@ -607,7 +607,6 @@ export function StyleTransformer() {
               borderRadius: "4px",
               background: C.bg,
               boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
-              overflow: "hidden",
             }}
           >
             <div
