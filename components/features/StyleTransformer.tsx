@@ -605,7 +605,7 @@ export function StyleTransformer() {
               overflowY: "auto",
               border: `1px solid ${C.rule}`,
               borderRadius: "4px",
-              background: C.panelBg,
+              background: C.bg,
               boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
               overflow: "hidden",
             }}
@@ -669,7 +669,7 @@ export function StyleTransformer() {
               style={{
                 borderTop: `1px solid ${C.rule}`,
                 padding: "0.75rem 1.75rem",
-                background: C.panelBg,
+                background: C.bg,
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.5rem",
