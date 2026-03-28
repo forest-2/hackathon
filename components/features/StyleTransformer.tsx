@@ -60,8 +60,10 @@ const C = {
   rule: "#E2DDD7",
   accent: "#C0392B",
   accentBg: "#FFF0EE",
+  accentBorder: "#E8B9A8",
   highlight: "#1B5E20",
   highlightBg: "#F0F7F0",
+  highlightBorder: "#A5C8A8",
   panelBg: "#FFFFFF",
   cursor: "#C0392B",
 } as const;
@@ -187,12 +189,243 @@ function StyleButton({
   );
 }
 
+function ModalGate({ show, onClose }: { show: boolean; onClose: () => void }) {
+  const [closing, setClosing] = useState(false);
+
+  if (!show && !closing) return null;
+
+  function handleClose() {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 220);
+  }
+
+  return <ConceptModal onClose={handleClose} closing={closing} />;
+}
+
+function ConceptModal({ onClose, closing }: { onClose: () => void; closing: boolean }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(26, 24, 20, 0.62)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+        padding: "2rem 1.5rem",
+        backdropFilter: "blur(2px)",
+        animation: closing ? "modalFadeOut 0.22s ease forwards" : "modalFadeIn 0.22s ease forwards",
+      }}
+    >
+      <dialog
+        open
+        aria-labelledby="modal-title"
+        style={{
+          background: "#FDFAF6",
+          borderRadius: "2px",
+          maxWidth: "560px",
+          width: "100%",
+          padding: "2rem 2.5rem 1.75rem",
+          boxShadow: "0 2px 8px rgba(26,24,20,0.08), 0 24px 64px rgba(26,24,20,0.22)",
+          position: "relative",
+          border: `1px solid ${C.rule}`,
+          maxHeight: "90dvh",
+          overflowY: "auto",
+        }}
+      >
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="閉じる"
+          style={{
+            position: "absolute",
+            top: "1.25rem",
+            right: "1.25rem",
+            width: "2rem",
+            height: "2rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "transparent",
+            border: `1px solid ${C.rule}`,
+            borderRadius: "2px",
+            cursor: "pointer",
+            color: C.inkMid,
+            fontFamily: "inherit",
+            fontSize: "1.125rem",
+            lineHeight: 1,
+            outline: "none",
+            padding: 0,
+          }}
+        >
+          ×
+        </button>
+
+        {/* Decorative accent rule */}
+        <div style={{ width: "2rem", height: "2px", background: C.accent, marginBottom: "1rem" }} />
+
+        <h1
+          id="modal-title"
+          style={{
+            fontSize: "1.25rem",
+            fontWeight: 700,
+            color: C.ink,
+            letterSpacing: "0.08em",
+            lineHeight: 1.4,
+            margin: "0 0 1.25rem",
+            fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+            animation: "textWipeIn 0.4s ease both",
+            animationDelay: "0.15s",
+          }}
+        >
+          ことばは、橋になる。
+        </h1>
+
+        <div
+          style={{
+            fontSize: "0.875rem",
+            color: C.ink,
+            lineHeight: 1.8,
+            letterSpacing: "0.03em",
+            fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+          }}
+        >
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.25s",
+            }}
+          >
+            人は、同じ気持ちを持っていても、相手によって言葉を変えます。
+            <br />
+            上司には丁寧に、友人には気軽に、子どもにはやさしく。
+            <br />
+            そのたびに私たちは、言葉を「翻訳」しています。
+          </p>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              paddingLeft: "1rem",
+              borderLeft: `2px solid ${C.rule}`,
+              color: C.inkMid,
+              fontStyle: "italic",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.38s",
+            }}
+          >
+            これが、communicationの本質です。
+          </p>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.5s",
+            }}
+          >
+            このツールは、その翻訳を可視化します。
+            <br />
+            ひとつの文章が、受け取る人によってどう形を変えるか——
+            <br />
+            文体を変えることは、相手を想像することです。
+            <br />
+            相手の立場に立つこと。それが、真のcommunicationだと私たちは考えます。
+          </p>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.65s",
+            }}
+          >
+            そして「
+            <span
+              style={{
+                fontWeight: 700,
+                color: C.highlight,
+                background: C.highlightBg,
+                padding: "0 0.25rem",
+                borderRadius: "1px",
+                border: `1px solid ${C.highlightBorder}`,
+              }}
+            >
+              やさしい日本語
+            </span>
+            」。
+            <br />
+            日本には約300万人の外国人住民がいます。
+            <br />
+            難しい行政文書、複雑な案内、伝わらない言葉——
+            <br />
+            やさしい日本語は、その壁を取り除くための社会的な技術です。
+            <br />
+            このツールは、それをワンクリックで実現します。
+          </p>
+          <p style={{ margin: 0, animation: "textWipeIn 0.4s ease both", animationDelay: "0.8s" }}>
+            communicationとは、ことばのトーンを合わせることで、人と人をつなぐことです。
+          </p>
+        </div>
+
+        <div
+          style={{
+            marginTop: "1.5rem",
+            paddingTop: "1.25rem",
+            borderTop: `1px solid ${C.rule}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+            animation: "textWipeIn 0.4s ease both",
+            animationDelay: "0.95s",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "0.6875rem",
+              color: C.inkLight,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            Japanese Style Transformer
+          </span>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: "0.625rem 2.25rem",
+              fontSize: "0.875rem",
+              fontWeight: 700,
+              letterSpacing: "0.08em",
+              background: C.ink,
+              color: "#FDFAF6",
+              border: "none",
+              borderRadius: "2px",
+              cursor: "pointer",
+              fontFamily: "inherit",
+              outline: "none",
+            }}
+          >
+            使ってみる
+          </button>
+        </div>
+      </dialog>
+    </div>
+  );
+}
+
 export function StyleTransformer() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [activeStyle, setActiveStyle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const outputRef = useRef<HTMLDivElement>(null);
 
   async function handleStyleClick(style: Style) {
@@ -231,6 +464,7 @@ export function StyleTransformer() {
         overflow: "hidden",
       }}
     >
+      <ModalGate show={showModal} onClose={() => setShowModal(false)} />
       {/* 左サイドバー */}
       <aside
         style={{
@@ -649,6 +883,18 @@ export function StyleTransformer() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
+        }
+        @keyframes modalFadeIn {
+          from { opacity: 0; filter: blur(12px); transform: scale(1.04); }
+          to   { opacity: 1; filter: blur(0px); transform: scale(1); }
+        }
+        @keyframes modalFadeOut {
+          from { opacity: 1; filter: blur(0px); transform: scale(1); }
+          to   { opacity: 0; filter: blur(16px); transform: scale(1.06); }
+        }
+        @keyframes textWipeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         textarea::placeholder { color: #B8B3AC; font-style: italic; }
         textarea:focus { outline: none; }
