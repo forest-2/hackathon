@@ -755,8 +755,7 @@ export function StyleTransformer() {
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
-              background: hasOutput || isLoading ? C.panelBg : C.bg,
-              transition: "background 0.3s ease",
+              background: C.bg,
             }}
             aria-live="polite"
           >
