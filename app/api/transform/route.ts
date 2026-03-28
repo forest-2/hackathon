@@ -1,11 +1,10 @@
 import type { NextRequest } from "next/server";
 import OpenAI from "openai";
 
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY,
-});
-
 export async function POST(req: NextRequest) {
+  const openai = new OpenAI({
+    apiKey: process.env.OPENAI_API_KEY,
+  });
   const { text, styleLabel, stylePrompt } = await req.json();
 
   if (!text?.trim()) {
