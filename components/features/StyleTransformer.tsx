@@ -595,7 +595,7 @@ export function StyleTransformer() {
         </header>
 
         {/* 左右分割コンテンツ */}
-        <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+        <div style={{ flex: 1, display: "flex", overflow: "hidden", padding: "1.25rem", gap: 0 }}>
           {/* 左パネル：入力 */}
           <section
             style={{
@@ -603,6 +603,11 @@ export function StyleTransformer() {
               display: "flex",
               flexDirection: "column",
               overflowY: "auto",
+              border: `1px solid ${C.rule}`,
+              borderRadius: "4px",
+              background: C.panelBg,
+              boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
+              overflow: "hidden",
             }}
           >
             <div
@@ -772,6 +777,9 @@ export function StyleTransformer() {
               flexDirection: "column",
               overflow: "hidden",
               background: C.bg,
+              border: `1px solid ${C.rule}`,
+              borderRadius: "4px",
+              boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
             }}
             aria-live="polite"
           >
