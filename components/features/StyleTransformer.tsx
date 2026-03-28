@@ -9,6 +9,16 @@ type Style = {
   highlight?: boolean;
 };
 
+// ---- 例文リスト（ここを編集して例文を追加・変更できます） ----
+const EXAMPLES: string[] = [
+  "明日の会議に少し遅れそうです。",
+  "この件について一度相談させてください。",
+  "先日はありがとうございました。",
+  "体調が悪いので今日は早退したいです。",
+  "プロジェクトの進捗はどうですか？",
+  "もう少し時間をいただけると助かります。",
+];
+
 const STYLES: Style[] = [
   { id: "boss", label: "上司向け", prompt: "敬語を使った丁寧なビジネス文体" },
   { id: "colleague", label: "同僚向け", prompt: "フレンドリーかつ仕事上の親しみやすい文体" },
@@ -326,7 +336,7 @@ export function StyleTransformer() {
               display: "flex",
               flexDirection: "column",
               borderRight: `1px solid ${C.rule}`,
-              overflow: "hidden",
+              overflowY: "auto",
             }}
           >
             <div
@@ -354,7 +364,7 @@ export function StyleTransformer() {
               </span>
             </div>
 
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+            <div style={{ flex: 1, minHeight: "140px", position: "relative", overflow: "hidden" }}>
               <textarea
                 id="input"
                 value={inputText}
@@ -379,6 +389,61 @@ export function StyleTransformer() {
                   caretColor: C.accent,
                 }}
               />
+            </div>
+
+            {/* 例文エリア */}
+            <div
+              style={{
+                borderTop: `1px solid ${C.rule}`,
+                padding: "0.75rem 1.75rem",
+                background: C.bg,
+                display: "flex",
+                flexDirection: "column",
+                gap: "0.5rem",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "0.625rem",
+                  letterSpacing: "0.14em",
+                  color: C.inkLight,
+                  textTransform: "uppercase",
+                }}
+              >
+                例文
+              </div>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+                {EXAMPLES.map((example) => (
+                  <button
+                    key={example}
+                    type="button"
+                    onClick={() => setInputText(example)}
+                    style={{
+                      textAlign: "left",
+                      background: "none",
+                      border: "none",
+                      padding: "0.2rem 0",
+                      fontSize: "0.8125rem",
+                      color: C.inkMid,
+                      cursor: "pointer",
+                      fontFamily: "inherit",
+                      lineHeight: 1.6,
+                      borderBottom: "1px solid transparent",
+                      transition: "color 0.15s, border-color 0.15s",
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.color = C.ink;
+                      e.currentTarget.style.borderBottomColor = C.rule;
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.color = C.inkMid;
+                      e.currentTarget.style.borderBottomColor = "transparent";
+                    }}
+                  >
+                    {example}
+                  </button>
+                ))}
+              </div>
             </div>
 
             {/* スタイルボタンエリア */}
