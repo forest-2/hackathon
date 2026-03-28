@@ -303,28 +303,58 @@ export function StyleTransformer() {
               Japanese Style Transformer
             </span>
           </div>
-          {isLoading && (
-            <div
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            {isLoading && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.375rem",
+                  fontSize: "0.75rem",
+                  color: C.accent,
+                }}
+              >
+                <span
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: C.accent,
+                    animation: "pulse 1s ease-in-out infinite",
+                  }}
+                />
+                生成中
+              </div>
+            )}
+            <a
+              href="https://github.com/forest-2/hackathon"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.375rem",
-                fontSize: "0.75rem",
-                color: C.accent,
+                gap: "0.4rem",
+                textDecoration: "none",
               }}
             >
+              {/* biome-ignore lint/a11y/useImgElement: decorative logo */}
+              <img
+                src="/forest-2.png"
+                alt="forest logo"
+                style={{ height: "36px", width: "36px", objectFit: "contain" }}
+              />
               <span
                 style={{
-                  width: "6px",
-                  height: "6px",
-                  borderRadius: "50%",
-                  background: C.accent,
-                  animation: "pulse 1s ease-in-out infinite",
+                  fontSize: "0.8125rem",
+                  fontWeight: 700,
+                  color: C.ink,
+                  letterSpacing: "0.04em",
                 }}
-              />
-              生成中
-            </div>
-          )}
+              >
+                forest-2
+              </span>
+            </a>
+          </div>
         </header>
 
         {/* 左右分割コンテンツ */}
