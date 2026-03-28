@@ -613,7 +613,8 @@ export function StyleTransformer() {
             <div
               style={{
                 padding: "0 1.75rem",
-                borderBottom: `1px solid ${C.rule}`,
+                borderBottom: `1px solid ${C.accentBorder}`,
+                background: C.accentBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -626,7 +627,7 @@ export function StyleTransformer() {
                   fontSize: "0.6875rem",
                   fontWeight: 700,
                   letterSpacing: "0.12em",
-                  color: C.inkMid,
+                  color: C.accent,
                   textTransform: "uppercase",
                 }}
               >
@@ -786,7 +787,8 @@ export function StyleTransformer() {
             <div
               style={{
                 padding: "0 1.75rem",
-                borderBottom: `1px solid ${C.rule}`,
+                borderBottom: `1px solid ${C.highlightBorder}`,
+                background: C.highlightBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -800,7 +802,7 @@ export function StyleTransformer() {
                     fontSize: "0.6875rem",
                     fontWeight: 700,
                     letterSpacing: "0.12em",
-                    color: C.inkMid,
+                    color: C.highlight,
                     textTransform: "uppercase",
                   }}
                 >
