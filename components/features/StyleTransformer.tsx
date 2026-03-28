@@ -646,9 +646,7 @@ export function StyleTransformer() {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
-                  01
-                </span>
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>01</span>
                 原文
               </span>
               <span style={{ fontSize: "0.6875rem", color: C.inkMid, letterSpacing: "0.04em" }}>
@@ -787,9 +785,7 @@ export function StyleTransformer() {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
-                  02
-                </span>
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>02</span>
                 文体を選ぶ
               </span>
             </div>
