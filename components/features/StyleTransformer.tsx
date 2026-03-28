@@ -58,13 +58,14 @@ const C = {
   inkMid: "#6B6560",
   inkLight: "#B8B3AC",
   rule: "#E2DDD7",
-  accent: "#1B5E20",
-  accentBg: "#F0F7F0",
-  accentBorder: "#A5C8A8",
+  accent: "#C0392B",
+  accentBg: "#FFF0EE",
+  accentBorder: "#E8B9A8",
   highlight: "#1B5E20",
   highlightBg: "#F0F7F0",
+  highlightBorder: "#A5C8A8",
   panelBg: "#FFFFFF",
-  cursor: "#1B5E20",
+  cursor: "#C0392B",
 } as const;
 
 async function fetchTransform(
@@ -346,11 +347,11 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             <span
               style={{
                 fontWeight: 700,
-                color: C.accent,
-                background: C.accentBg,
+                color: C.highlight,
+                background: C.highlightBg,
                 padding: "0 0.25rem",
                 borderRadius: "1px",
-                border: `1px solid ${C.accentBorder}`,
+                border: `1px solid ${C.highlightBorder}`,
               }}
             >
               やさしい日本語
