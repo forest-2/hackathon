@@ -860,12 +860,12 @@ export function StyleTransformer() {
           50% { opacity: 0.3; }
         }
         @keyframes modalFadeIn {
-          from { opacity: 0; transform: translateY(8px); }
-          to   { opacity: 1; transform: translateY(0); }
+          from { opacity: 0; transform: scale(0.92); }
+          to   { opacity: 1; transform: scale(1); }
         }
         @keyframes modalFadeOut {
-          from { opacity: 1; transform: translateY(0); }
-          to   { opacity: 0; transform: translateY(8px); }
+          from { opacity: 1; transform: scale(1); }
+          to   { opacity: 0; transform: scale(0.92); }
         }
         textarea::placeholder { color: #B8B3AC; font-style: italic; }
         textarea:focus { outline: none; }
