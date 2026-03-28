@@ -189,11 +189,22 @@ function StyleButton({
 }
 
 function ModalGate({ show, onClose }: { show: boolean; onClose: () => void }) {
-  if (!show) return null;
-  return <ConceptModal onClose={onClose} />;
+  const [closing, setClosing] = useState(false);
+
+  if (!show && !closing) return null;
+
+  function handleClose() {
+    setClosing(true);
+    setTimeout(() => {
+      setClosing(false);
+      onClose();
+    }, 220);
+  }
+
+  return <ConceptModal onClose={handleClose} closing={closing} />;
 }
 
-function ConceptModal({ onClose }: { onClose: () => void }) {
+function ConceptModal({ onClose, closing }: { onClose: () => void; closing: boolean }) {
   return (
     <div
       style={{
@@ -206,6 +217,7 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
         zIndex: 1000,
         padding: "2rem 1.5rem",
         backdropFilter: "blur(2px)",
+        animation: closing ? "modalFadeOut 0.22s ease forwards" : "modalFadeIn 0.22s ease forwards",
       }}
     >
       <dialog
@@ -846,6 +858,14 @@ export function StyleTransformer() {
         @keyframes pulse {
           0%, 100% { opacity: 1; }
           50% { opacity: 0.3; }
+        }
+        @keyframes modalFadeIn {
+          from { opacity: 0; transform: translateY(8px); }
+          to   { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes modalFadeOut {
+          from { opacity: 1; transform: translateY(0); }
+          to   { opacity: 0; transform: translateY(8px); }
         }
         textarea::placeholder { color: #B8B3AC; font-style: italic; }
         textarea:focus { outline: none; }
