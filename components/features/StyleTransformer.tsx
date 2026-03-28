@@ -613,20 +613,7 @@ export function StyleTransformer() {
               )}
             </div>
 
-            {hasOutput && (
-              <div
-                style={{
-                  borderTop: `1px solid ${C.rule}`,
-                  padding: "0.625rem 1.75rem",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
-                  {outputText.length} 文字
-                </span>
-              </div>
-            )}
+
           </section>
         </div>
       </main>
