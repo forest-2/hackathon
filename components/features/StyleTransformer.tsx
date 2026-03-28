@@ -602,7 +602,6 @@ export function StyleTransformer() {
               flex: 1,
               display: "flex",
               flexDirection: "column",
-              borderRight: `1px solid ${C.rule}`,
               overflowY: "auto",
             }}
           >
@@ -747,6 +746,23 @@ export function StyleTransformer() {
               </div>
             </div>
           </section>
+
+          {/* パネル間 ▶︎ アイコン */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "2rem",
+              flexShrink: 0,
+              color: C.accent,
+              fontSize: "0.75rem",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            ▶
+          </div>
 
           {/* 右パネル：出力 */}
           <section
