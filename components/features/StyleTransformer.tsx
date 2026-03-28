@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 
 type Style = {
   id: string;
@@ -30,10 +30,40 @@ const STYLES: Style[] = [
   { id: "classical", label: "古文風", prompt: "平安〜江戸時代の古典的な日本語の文体" },
 ];
 
-function styleButtonColors(isActive: boolean, highlight: boolean) {
-  if (isActive) return { borderColor: "#6366f1", background: "#6366f1", color: "#fff" };
-  if (highlight) return { borderColor: "#16a34a", background: "#f0fdf4", color: "#16a34a" };
-  return { borderColor: "#e5e7eb", background: "var(--background)", color: "var(--foreground)" };
+const C = {
+  bg: "#F7F5F0",
+  ink: "#1A1814",
+  inkMid: "#6B6560",
+  inkLight: "#B8B3AC",
+  rule: "#E2DDD7",
+  accent: "#C0392B",
+  accentBg: "#FFF0EE",
+  highlight: "#1B5E20",
+  highlightBg: "#F0F7F0",
+  panelBg: "#FFFFFF",
+  cursor: "#C0392B",
+} as const;
+
+function StreamCursor() {
+  const [visible, setVisible] = useState(true);
+  useEffect(() => {
+    const id = setInterval(() => setVisible((v) => !v), 500);
+    return () => clearInterval(id);
+  }, []);
+  return (
+    <span
+      aria-hidden="true"
+      style={{
+        display: "inline-block",
+        width: "2px",
+        height: "1.1em",
+        background: visible ? C.cursor : "transparent",
+        marginLeft: "2px",
+        verticalAlign: "text-bottom",
+        borderRadius: "1px",
+      }}
+    />
+  );
 }
 
 function StyleButton({
@@ -47,26 +77,54 @@ function StyleButton({
   disabled: boolean;
   onClick: () => void;
 }) {
-  const colors = styleButtonColors(isActive, !!style.highlight);
+  const [hovered, setHovered] = useState(false);
+
+  const base: React.CSSProperties = {
+    padding: "0.45rem 1.1rem",
+    fontSize: "0.8125rem",
+    fontWeight: isActive ? 700 : 400,
+    letterSpacing: "0.02em",
+    border: "1.5px solid",
+    borderRadius: "9999px",
+    cursor: disabled && !isActive ? "not-allowed" : "pointer",
+    opacity: disabled && !isActive ? 0.45 : 1,
+    transition: "all 0.18s ease",
+    whiteSpace: "nowrap" as const,
+    lineHeight: 1,
+    outline: "none",
+    fontFamily: "inherit",
+    userSelect: "none" as const,
+  };
+
+  let colors: React.CSSProperties;
+  if (isActive && style.highlight) {
+    colors = { borderColor: C.highlight, background: C.highlight, color: "#fff" };
+  } else if (isActive) {
+    colors = { borderColor: C.accent, background: C.accent, color: "#fff" };
+  } else if (style.highlight) {
+    colors = {
+      borderColor: hovered ? C.highlight : C.rule,
+      background: hovered ? C.highlightBg : C.panelBg,
+      color: C.highlight,
+    };
+  } else {
+    colors = {
+      borderColor: hovered ? C.inkMid : C.rule,
+      background: hovered && !disabled ? C.bg : C.panelBg,
+      color: hovered && !disabled ? C.ink : C.inkMid,
+    };
+  }
+
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled}
-      style={{
-        padding: "0.5rem 1rem",
-        fontSize: "0.875rem",
-        fontWeight: isActive ? 600 : 400,
-        border: "1.5px solid",
-        borderRadius: "2rem",
-        cursor: disabled ? "not-allowed" : "pointer",
-        opacity: disabled && !isActive ? 0.5 : 1,
-        transition: "all 0.15s",
-        whiteSpace: "nowrap",
-        ...colors,
-      }}
+      disabled={disabled && !isActive}
+      onMouseEnter={() => setHovered(true)}
+      onMouseLeave={() => setHovered(false)}
+      style={{ ...base, ...colors }}
     >
-      {style.highlight ? `🌏 ${style.label}` : style.label}
+      {style.label}
     </button>
   );
 }
@@ -76,6 +134,8 @@ export function StyleTransformer() {
   const [outputText, setOutputText] = useState("");
   const [activeStyle, setActiveStyle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
+  const [copied, setCopied] = useState(false);
+  const outputRef = useRef<HTMLDivElement>(null);
 
   async function streamResponse(reader: ReadableStreamDefaultReader<Uint8Array>) {
     const decoder = new TextDecoder();
@@ -98,11 +158,7 @@ export function StyleTransformer() {
       const res = await fetch("/api/transform", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: inputText,
-          styleLabel: style.label,
-          stylePrompt: style.prompt,
-        }),
+        body: JSON.stringify({ text: inputText, styleLabel: style.label, stylePrompt: style.prompt }),
       });
 
       if (!res.ok || !res.body) {
@@ -118,134 +174,303 @@ export function StyleTransformer() {
     }
   }
 
-  const activeStyleLabel = STYLES.find((s) => s.id === activeStyle)?.label;
+  function handleCopy() {
+    if (!outputText) return;
+    navigator.clipboard.writeText(outputText).then(() => {
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    });
+  }
+
+  const activeStyleObj = STYLES.find((s) => s.id === activeStyle);
+  const hasOutput = outputText.length > 0;
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <label
-          htmlFor="input"
+    <div
+      style={{
+        display: "flex",
+        height: "100dvh",
+        width: "100%",
+        background: C.bg,
+        fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+        overflow: "hidden",
+      }}
+    >
+      {/* 左サイドバー */}
+      <aside
+        style={{
+          width: "52px",
+          minWidth: "52px",
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+          justifyContent: "space-between",
+          padding: "2rem 0",
+          borderRight: `1px solid ${C.rule}`,
+          background: C.panelBg,
+        }}
+      >
+        <div
           style={{
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            color: "var(--color-muted)",
+            writingMode: "vertical-rl",
+            textOrientation: "mixed",
+            fontSize: "0.6875rem",
+            fontWeight: 700,
+            letterSpacing: "0.18em",
+            color: C.ink,
             textTransform: "uppercase",
-            letterSpacing: "0.05em",
+            userSelect: "none",
           }}
         >
-          原文
-        </label>
-        <textarea
-          id="input"
-          value={inputText}
-          onChange={(e) => setInputText(e.target.value)}
-          placeholder="ここに文章を入力してください…"
-          rows={5}
-          style={{
-            width: "100%",
-            padding: "0.875rem",
-            fontSize: "1rem",
-            lineHeight: 1.6,
-            border: "1.5px solid #e5e7eb",
-            borderRadius: "0.5rem",
-            resize: "vertical",
-            fontFamily: "inherit",
-            background: "var(--background)",
-            color: "var(--foreground)",
-            outline: "none",
-            transition: "border-color 0.15s",
-          }}
-          onFocus={(e) => {
-            e.target.style.borderColor = "#6366f1";
-          }}
-          onBlur={(e) => {
-            e.target.style.borderColor = "#e5e7eb";
-          }}
-        />
-      </div>
-
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem" }}>
-        <span
-          style={{
-            fontSize: "0.75rem",
-            fontWeight: 600,
-            color: "var(--color-muted)",
-            textTransform: "uppercase",
-            letterSpacing: "0.05em",
-          }}
-        >
-          文体を選ぶ
-        </span>
-        <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-          {STYLES.map((style) => (
-            <StyleButton
-              key={style.id}
-              style={style}
-              isActive={activeStyle === style.id}
-              disabled={isLoading || !inputText.trim()}
-              onClick={() => handleStyleClick(style)}
-            />
-          ))}
+          文 体 変 換
         </div>
-      </div>
+        <div
+          style={{
+            writingMode: "vertical-rl",
+            fontSize: "0.625rem",
+            color: C.inkLight,
+            letterSpacing: "0.12em",
+          }}
+        >
+          Style
+        </div>
+      </aside>
 
-      <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-        <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-          <label
-            htmlFor="output"
+      {/* メインエリア */}
+      <main style={{ flex: 1, display: "flex", flexDirection: "column", overflow: "hidden" }}>
+        {/* トップバー */}
+        <header
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            padding: "0 2rem",
+            height: "52px",
+            minHeight: "52px",
+            borderBottom: `1px solid ${C.rule}`,
+            background: C.panelBg,
+          }}
+        >
+          <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
+            <span style={{ fontSize: "1rem", fontWeight: 700, color: C.ink, letterSpacing: "0.04em" }}>
+              文体変換
+            </span>
+            <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.06em", paddingTop: "1px" }}>
+              Japanese Style Transformer
+            </span>
+          </div>
+          {isLoading && (
+            <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: C.accent }}>
+              <span
+                style={{
+                  width: "6px",
+                  height: "6px",
+                  borderRadius: "50%",
+                  background: C.accent,
+                  animation: "pulse 1s ease-in-out infinite",
+                }}
+              />
+              生成中
+            </div>
+          )}
+        </header>
+
+        {/* 左右分割コンテンツ */}
+        <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+          {/* 左パネル：入力 */}
+          <section
             style={{
-              fontSize: "0.75rem",
-              fontWeight: 600,
-              color: "var(--color-muted)",
-              textTransform: "uppercase",
-              letterSpacing: "0.05em",
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              borderRight: `1px solid ${C.rule}`,
+              overflow: "hidden",
             }}
           >
-            変換後
-            {activeStyleLabel && !isLoading && (
-              <span style={{ marginLeft: "0.5rem", color: "#6366f1" }}>— {activeStyleLabel}</span>
-            )}
-            {isLoading && <span style={{ marginLeft: "0.5rem", color: "#6366f1" }}>生成中…</span>}
-          </label>
-          {outputText && (
-            <button
-              type="button"
-              onClick={() => navigator.clipboard.writeText(outputText)}
+            <div
               style={{
-                fontSize: "0.75rem",
-                padding: "0.25rem 0.625rem",
-                border: "1px solid #e5e7eb",
-                borderRadius: "0.375rem",
-                background: "transparent",
-                color: "var(--color-muted)",
-                cursor: "pointer",
+                padding: "1rem 1.75rem 0.75rem",
+                borderBottom: `1px solid ${C.rule}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
               }}
             >
-              コピー
-            </button>
-          )}
+              <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", color: C.inkMid, textTransform: "uppercase" }}>
+                原文
+              </span>
+              <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
+                {inputText.length} 文字
+              </span>
+            </div>
+
+            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+              <textarea
+                id="input"
+                value={inputText}
+                onChange={(e) => setInputText(e.target.value)}
+                placeholder={"ここに変換したい文章を入力してください…\n\n例：「明日の会議に少し遅れそうです」"}
+                style={{
+                  position: "absolute",
+                  inset: 0,
+                  width: "100%",
+                  height: "100%",
+                  padding: "1.5rem 1.75rem",
+                  fontSize: "1rem",
+                  lineHeight: 1.85,
+                  border: "none",
+                  resize: "none",
+                  fontFamily: "inherit",
+                  background: "transparent",
+                  color: C.ink,
+                  outline: "none",
+                  caretColor: C.accent,
+                }}
+              />
+            </div>
+
+            {/* スタイルボタンエリア */}
+            <div
+              style={{
+                borderTop: `1px solid ${C.rule}`,
+                padding: "1rem 1.75rem 1.25rem",
+                background: C.panelBg,
+              }}
+            >
+              <div style={{ fontSize: "0.625rem", letterSpacing: "0.14em", color: C.inkLight, textTransform: "uppercase", marginBottom: "0.75rem" }}>
+                変換スタイルを選択
+              </div>
+              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
+                {STYLES.map((style) => (
+                  <StyleButton
+                    key={style.id}
+                    style={style}
+                    isActive={activeStyle === style.id}
+                    disabled={isLoading || !inputText.trim()}
+                    onClick={() => handleStyleClick(style)}
+                  />
+                ))}
+              </div>
+            </div>
+          </section>
+
+          {/* 右パネル：出力 */}
+          <section
+            style={{
+              flex: 1,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              background: hasOutput || isLoading ? C.panelBg : C.bg,
+              transition: "background 0.3s ease",
+            }}
+            aria-live="polite"
+          >
+            <div
+              style={{
+                padding: "1rem 1.75rem 0.75rem",
+                borderBottom: `1px solid ${C.rule}`,
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                minHeight: "52px",
+              }}
+            >
+              <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", color: C.inkMid, textTransform: "uppercase" }}>
+                  変換後
+                </span>
+                {activeStyleObj && (
+                  <span
+                    style={{
+                      fontSize: "0.6875rem",
+                      padding: "0.125rem 0.5rem",
+                      borderRadius: "9999px",
+                      border: `1px solid ${activeStyleObj.highlight ? C.highlight : C.accent}`,
+                      color: activeStyleObj.highlight ? C.highlight : C.accent,
+                      letterSpacing: "0.04em",
+                      lineHeight: 1.6,
+                    }}
+                  >
+                    {activeStyleObj.label}
+                  </span>
+                )}
+              </div>
+              {hasOutput && !isLoading && (
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  style={{
+                    fontSize: "0.6875rem",
+                    padding: "0.3rem 0.8rem",
+                    border: `1px solid ${copied ? C.accent : C.rule}`,
+                    borderRadius: "9999px",
+                    background: copied ? C.accentBg : "transparent",
+                    color: copied ? C.accent : C.inkMid,
+                    cursor: "pointer",
+                    transition: "all 0.18s ease",
+                    fontFamily: "inherit",
+                    letterSpacing: "0.04em",
+                    outline: "none",
+                  }}
+                >
+                  {copied ? "コピー済み ✓" : "コピー"}
+                </button>
+              )}
+            </div>
+
+            <div ref={outputRef} style={{ flex: 1, padding: "1.5rem 1.75rem", overflowY: "auto", position: "relative" }}>
+              {!hasOutput && !isLoading && (
+                <div
+                  style={{
+                    position: "absolute",
+                    inset: 0,
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "0.75rem",
+                    pointerEvents: "none",
+                    userSelect: "none",
+                  }}
+                >
+                  <div style={{ width: "48px", height: "1px", background: C.rule }} />
+                  <p style={{ fontSize: "0.8125rem", color: C.inkLight, letterSpacing: "0.06em", lineHeight: 2, textAlign: "center", margin: 0 }}>
+                    原文を入力し<br />スタイルを選択してください
+                  </p>
+                  <div style={{ width: "48px", height: "1px", background: C.rule }} />
+                </div>
+              )}
+              {(hasOutput || isLoading) && (
+                <p style={{ fontSize: "1rem", lineHeight: 1.85, color: C.ink, margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
+                  {outputText}
+                  {isLoading && <StreamCursor />}
+                </p>
+              )}
+            </div>
+
+            {hasOutput && (
+              <div style={{ borderTop: `1px solid ${C.rule}`, padding: "0.625rem 1.75rem", display: "flex", justifyContent: "flex-end" }}>
+                <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
+                  {outputText.length} 文字
+                </span>
+              </div>
+            )}
+          </section>
         </div>
-        <textarea
-          id="output"
-          value={outputText}
-          readOnly
-          rows={5}
-          placeholder="ボタンを押すと変換結果がここに表示されます"
-          style={{
-            width: "100%",
-            padding: "0.875rem",
-            fontSize: "1rem",
-            lineHeight: 1.6,
-            border: "1.5px solid #e5e7eb",
-            borderRadius: "0.5rem",
-            resize: "vertical",
-            fontFamily: "inherit",
-            background: outputText ? "var(--background)" : "#f9fafb",
-            color: "var(--foreground)",
-            outline: "none",
-          }}
-        />
-      </div>
+      </main>
+
+      <style>{`
+        @keyframes pulse {
+          0%, 100% { opacity: 1; }
+          50% { opacity: 0.3; }
+        }
+        textarea::placeholder { color: #B8B3AC; font-style: italic; }
+        textarea:focus { outline: none; }
+        ::-webkit-scrollbar { width: 4px; }
+        ::-webkit-scrollbar-track { background: transparent; }
+        ::-webkit-scrollbar-thumb { background: #E2DDD7; border-radius: 2px; }
+      `}</style>
     </div>
   );
 }
