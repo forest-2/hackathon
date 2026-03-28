@@ -103,32 +103,6 @@ async function readStream(
   }
 }
 
-function getButtonColors(
-  isActive: boolean,
-  highlight: boolean,
-  hovered: boolean,
-  disabled: boolean,
-): React.CSSProperties {
-  if (isActive && highlight) {
-    return { borderColor: C.highlight, background: C.highlight, color: "#fff" };
-  }
-  if (isActive) {
-    return { borderColor: C.accent, background: C.accent, color: "#fff" };
-  }
-  if (highlight) {
-    return {
-      borderColor: hovered ? C.highlight : C.rule,
-      background: hovered ? C.highlightBg : C.panelBg,
-      color: C.highlight,
-    };
-  }
-  return {
-    borderColor: hovered ? C.inkMid : C.rule,
-    background: hovered && !disabled ? C.bg : C.panelBg,
-    color: hovered && !disabled ? C.ink : C.inkMid,
-  };
-}
-
 function StreamCursor() {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
@@ -162,35 +136,65 @@ function StyleButton({
   disabled: boolean;
   onClick: () => void;
 }) {
-  const [hovered, setHovered] = useState(false);
-  const colors = getButtonColors(isActive, !!style.highlight, hovered, disabled);
+  const isHighlight = !!style.highlight;
+  const bg = isActive ? C.ink : isHighlight ? C.highlightBg : C.panelBg;
+  const color = isActive ? C.panelBg : isHighlight ? C.highlight : C.inkMid;
 
   return (
     <button
       type="button"
       onClick={onClick}
-      disabled={disabled && !isActive}
-      onMouseEnter={() => setHovered(true)}
-      onMouseLeave={() => setHovered(false)}
+      disabled={disabled}
       style={{
-        padding: "0.45rem 1.1rem",
-        fontSize: "0.8125rem",
-        fontWeight: isActive ? 700 : 400,
-        letterSpacing: "0.02em",
-        border: "1.5px solid",
-        borderRadius: "9999px",
-        cursor: disabled && !isActive ? "not-allowed" : "pointer",
-        opacity: disabled && !isActive ? 0.45 : 1,
-        transition: "all 0.18s ease",
-        whiteSpace: "nowrap",
-        lineHeight: 1,
-        outline: "none",
+        width: "100%",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "space-between",
+        padding: "0.7rem 1.25rem",
+        fontSize: "0.875rem",
         fontFamily: "inherit",
-        userSelect: "none",
-        ...colors,
+        fontWeight: isActive ? 600 : 400,
+        border: "none",
+        borderBottom: `1px solid ${C.rule}`,
+        borderRadius: 0,
+        cursor: disabled ? "not-allowed" : "pointer",
+        opacity: disabled && !isActive ? 0.45 : 1,
+        transition: "background 0.12s, color 0.12s",
+        letterSpacing: "0.02em",
+        lineHeight: 1.5,
+        outline: "none",
+        textAlign: "left",
+        background: bg,
+        color,
       }}
     >
-      {style.label}
+      <span style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+        {isHighlight && (
+          <span
+            style={{
+              width: "6px",
+              height: "6px",
+              borderRadius: "50%",
+              background: isActive ? C.panelBg : C.highlight,
+              flexShrink: 0,
+              display: "inline-block",
+            }}
+          />
+        )}
+        {style.label}
+      </span>
+      {isActive && (
+        <span
+          style={{
+            width: "4px",
+            height: "1rem",
+            borderRadius: "2px",
+            background: C.accent,
+            flexShrink: 0,
+            display: "inline-block",
+          }}
+        />
+      )}
     </button>
   );
 }
@@ -596,29 +600,29 @@ export function StyleTransformer() {
           </div>
         </header>
 
-        {/* 左右分割コンテンツ */}
+        {/* 3カラムコンテンツ */}
         <div
           style={{
             flex: 1,
             display: "flex",
             overflow: "hidden",
             padding: "1.25rem",
-            gap: 0,
-            background: "#DEDAD4",
+            gap: "0",
+            background: "#B8B0A6",
           }}
         >
-          {/* 左パネル：入力 */}
+          {/* Col 1: 原文 (34%) */}
           <section
             style={{
-              flex: 1,
+              width: "34%",
+              minWidth: 0,
               display: "flex",
               flexDirection: "column",
-              overflowY: "auto",
+              overflow: "hidden",
               border: `1px solid ${C.rule}`,
               borderRadius: "4px",
               background: C.bg,
               boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
-              overflow: "hidden",
             }}
           >
             <div
@@ -630,6 +634,7 @@ export function StyleTransformer() {
                 justifyContent: "space-between",
                 height: "52px",
                 flexShrink: 0,
+                background: "#D4CEC6",
               }}
             >
               <span
@@ -641,21 +646,20 @@ export function StyleTransformer() {
                   textTransform: "uppercase",
                 }}
               >
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>01</span>
                 原文
               </span>
-              <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
+              <span style={{ fontSize: "0.6875rem", color: C.inkMid, letterSpacing: "0.04em" }}>
                 {inputText.length} 文字
               </span>
             </div>
 
-            <div style={{ flex: 1, minHeight: "140px", position: "relative", overflow: "hidden" }}>
+            <div style={{ flex: 1, minHeight: "100px", position: "relative", overflow: "hidden" }}>
               <textarea
                 id="input"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={
-                  "ここに変換したい文章を入力してください…\n\n例：「明日の会議に少し遅れそうです」"
-                }
+                placeholder={"ここに変換したい文章を入力してください…"}
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -681,9 +685,7 @@ export function StyleTransformer() {
                 borderTop: `1px solid ${C.rule}`,
                 padding: "0.75rem 1.75rem",
                 background: C.bg,
-                display: "flex",
-                flexDirection: "column",
-                gap: "0.5rem",
+                flexShrink: 0,
               }}
             >
               <div
@@ -692,11 +694,12 @@ export function StyleTransformer() {
                   letterSpacing: "0.14em",
                   color: C.inkLight,
                   textTransform: "uppercase",
+                  marginBottom: "0.5rem",
                 }}
               >
                 例文
               </div>
-              <div style={{ display: "flex", flexDirection: "column", gap: "0.25rem" }}>
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.2rem" }}>
                 {EXAMPLES.map((example) => (
                   <button
                     key={example}
@@ -729,41 +732,9 @@ export function StyleTransformer() {
                 ))}
               </div>
             </div>
-
-            {/* スタイルボタンエリア */}
-            <div
-              style={{
-                borderTop: `1px solid ${C.rule}`,
-                padding: "1rem 1.75rem 1.25rem",
-                background: C.panelBg,
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "0.625rem",
-                  letterSpacing: "0.14em",
-                  color: C.inkLight,
-                  textTransform: "uppercase",
-                  marginBottom: "0.75rem",
-                }}
-              >
-                変換スタイルを選択
-              </div>
-              <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
-                {STYLES.map((style) => (
-                  <StyleButton
-                    key={style.id}
-                    style={style}
-                    isActive={activeStyle === style.id}
-                    disabled={isLoading || !inputText.trim()}
-                    onClick={() => handleStyleClick(style)}
-                  />
-                ))}
-              </div>
-            </div>
           </section>
 
-          {/* パネル間 ▶︎ アイコン */}
+          {/* Col 1→2 arrow */}
           <div
             style={{
               display: "flex",
@@ -780,10 +751,80 @@ export function StyleTransformer() {
             ▶
           </div>
 
-          {/* 右パネル：出力 */}
+          {/* Col 2: 文体を選ぶ (24%) */}
+          <section
+            style={{
+              width: "24%",
+              minWidth: 0,
+              display: "flex",
+              flexDirection: "column",
+              overflow: "hidden",
+              border: `1px solid ${C.rule}`,
+              borderRadius: "4px",
+              background: C.panelBg,
+              boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
+            }}
+          >
+            <div
+              style={{
+                padding: "0 1.25rem",
+                borderBottom: `1px solid ${C.rule}`,
+                display: "flex",
+                alignItems: "center",
+                height: "52px",
+                flexShrink: 0,
+                background: "#D4CEC6",
+              }}
+            >
+              <span
+                style={{
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  color: C.inkMid,
+                  textTransform: "uppercase",
+                }}
+              >
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>02</span>
+                文体を選ぶ
+              </span>
+            </div>
+
+            <div style={{ flex: 1, overflowY: "auto" }}>
+              {STYLES.map((style) => (
+                <StyleButton
+                  key={style.id}
+                  style={style}
+                  isActive={activeStyle === style.id}
+                  disabled={isLoading || !inputText.trim()}
+                  onClick={() => handleStyleClick(style)}
+                />
+              ))}
+            </div>
+          </section>
+
+          {/* Col 2→3 arrow */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "2rem",
+              flexShrink: 0,
+              color: C.accent,
+              fontSize: "0.75rem",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            ▶
+          </div>
+
+          {/* Col 3: 変換後 (flex:1) */}
           <section
             style={{
               flex: 1,
+              minWidth: 0,
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
@@ -803,6 +844,7 @@ export function StyleTransformer() {
                 justifyContent: "space-between",
                 height: "52px",
                 flexShrink: 0,
+                background: "#D4CEC6",
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -815,6 +857,9 @@ export function StyleTransformer() {
                     textTransform: "uppercase",
                   }}
                 >
+                  <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
+                    03
+                  </span>
                   変換後
                 </span>
                 {activeStyleObj && (
@@ -892,7 +937,7 @@ export function StyleTransformer() {
                   >
                     原文を入力し
                     <br />
-                    スタイルを選択してください
+                    文体を選択してください
                   </p>
                   <div style={{ width: "48px", height: "1px", background: C.rule }} />
                 </div>
