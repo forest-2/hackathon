@@ -187,12 +187,123 @@ function StyleButton({
   );
 }
 
+function ModalGate({ show, onClose }: { show: boolean; onClose: () => void }) {
+  if (!show) return null;
+  return <ConceptModal onClose={onClose} />;
+}
+
+function ConceptModal({ onClose }: { onClose: () => void }) {
+  return (
+    <div
+      style={{
+        position: "fixed",
+        inset: 0,
+        background: "rgba(30, 25, 20, 0.55)",
+        display: "flex",
+        alignItems: "center",
+        justifyContent: "center",
+        zIndex: 1000,
+        padding: "1.5rem",
+      }}
+    >
+      <div
+        style={{
+          background: "#FDFAF6",
+          borderRadius: "4px",
+          maxWidth: "560px",
+          width: "100%",
+          padding: "3rem 3rem 2.25rem",
+          boxShadow: "0 8px 40px rgba(30,25,20,0.18)",
+          position: "relative",
+          border: `1px solid ${C.rule}`,
+        }}
+      >
+        <h1
+          style={{
+            fontSize: "1.375rem",
+            fontWeight: 700,
+            color: C.ink,
+            letterSpacing: "0.06em",
+            marginBottom: "1.75rem",
+            lineHeight: 1.4,
+          }}
+        >
+          ことばは、橋になる。
+        </h1>
+        <div
+          style={{
+            fontSize: "0.9rem",
+            color: C.inkLight,
+            lineHeight: 1.9,
+            letterSpacing: "0.03em",
+          }}
+        >
+          <p style={{ margin: "0 0 1.25rem" }}>
+            人は、同じ気持ちを持っていても、相手によって言葉を変えます。
+            <br />
+            上司には丁寧に、友人には気軽に、子どもにはやさしく。
+            <br />
+            そのたびに私たちは、言葉を「翻訳」しています。
+          </p>
+          <p style={{ margin: "0 0 1.25rem" }}>これが、communicationの本質です。</p>
+          <p style={{ margin: "0 0 1.25rem" }}>
+            このツールは、その翻訳を可視化します。
+            <br />
+            ひとつの文章が、受け取る人によってどう形を変えるか——
+            <br />
+            文体を変えることは、相手を想像することです。
+            <br />
+            相手の立場に立つこと。それが、真のcommunicationだと私たちは考えます。
+          </p>
+          <p style={{ margin: "0 0 1.25rem" }}>
+            そして「
+            <span style={{ fontWeight: 700, color: C.highlight }}>やさしい日本語</span>
+            」。
+            <br />
+            日本には約300万人の外国人住民がいます。
+            <br />
+            難しい行政文書、複雑な案内、伝わらない言葉——
+            <br />
+            やさしい日本語は、その壁を取り除くための社会的な技術です。
+            <br />
+            このツールは、それをワンクリックで実現します。
+          </p>
+          <p style={{ margin: 0 }}>
+            communicationとは、ことばのトーンを合わせることで、人と人をつなぐことです。
+          </p>
+        </div>
+        <div style={{ marginTop: "2.25rem", display: "flex", justifyContent: "flex-end" }}>
+          <button
+            type="button"
+            onClick={onClose}
+            style={{
+              padding: "0.625rem 2rem",
+              fontSize: "0.875rem",
+              fontWeight: 700,
+              letterSpacing: "0.06em",
+              background: C.ink,
+              color: "#FDFAF6",
+              border: "none",
+              borderRadius: "2px",
+              cursor: "pointer",
+              fontFamily: "inherit",
+            }}
+          >
+            使ってみる
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}
+
 export function StyleTransformer() {
   const [inputText, setInputText] = useState("");
   const [outputText, setOutputText] = useState("");
   const [activeStyle, setActiveStyle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [copied, setCopied] = useState(false);
+  const [showModal, setShowModal] = useState(true);
   const outputRef = useRef<HTMLDivElement>(null);
 
   async function handleStyleClick(style: Style) {
@@ -231,6 +342,7 @@ export function StyleTransformer() {
         overflow: "hidden",
       }}
     >
+      <ModalGate show={showModal} onClose={() => setShowModal(false)} />
       {/* 左サイドバー */}
       <aside
         style={{
