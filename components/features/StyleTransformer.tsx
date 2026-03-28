@@ -60,6 +60,7 @@ const C = {
   rule: "#E2DDD7",
   accent: "#C0392B",
   accentBg: "#FFF0EE",
+  accentBorder: "#E8B9A8",
   highlight: "#1B5E20",
   highlightBg: "#F0F7F0",
   panelBg: "#FFFFFF",
@@ -198,55 +199,108 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
       style={{
         position: "fixed",
         inset: 0,
-        background: "rgba(30, 25, 20, 0.55)",
+        background: "rgba(26, 24, 20, 0.62)",
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
         zIndex: 1000,
-        padding: "1.5rem",
+        padding: "2rem 1.5rem",
+        backdropFilter: "blur(2px)",
       }}
     >
-      <div
+      <dialog
+        open
+        aria-labelledby="modal-title"
         style={{
           background: "#FDFAF6",
-          borderRadius: "4px",
-          maxWidth: "560px",
+          borderRadius: "2px",
+          maxWidth: "580px",
           width: "100%",
-          padding: "3rem 3rem 2.25rem",
-          boxShadow: "0 8px 40px rgba(30,25,20,0.18)",
+          padding: "3rem 3rem 2.5rem",
+          boxShadow: "0 2px 8px rgba(26,24,20,0.08), 0 24px 64px rgba(26,24,20,0.22)",
           position: "relative",
           border: `1px solid ${C.rule}`,
+          maxHeight: "90dvh",
+          overflowY: "auto",
         }}
       >
+        {/* Close button */}
+        <button
+          type="button"
+          onClick={onClose}
+          aria-label="閉じる"
+          style={{
+            position: "absolute",
+            top: "1.25rem",
+            right: "1.25rem",
+            width: "2rem",
+            height: "2rem",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            background: "transparent",
+            border: `1px solid ${C.rule}`,
+            borderRadius: "2px",
+            cursor: "pointer",
+            color: C.inkMid,
+            fontFamily: "inherit",
+            fontSize: "1.125rem",
+            lineHeight: 1,
+            outline: "none",
+            padding: 0,
+          }}
+        >
+          ×
+        </button>
+
+        {/* Decorative accent rule */}
+        <div
+          style={{ width: "2rem", height: "2px", background: C.accent, marginBottom: "1.5rem" }}
+        />
+
         <h1
+          id="modal-title"
           style={{
             fontSize: "1.375rem",
             fontWeight: 700,
             color: C.ink,
-            letterSpacing: "0.06em",
-            marginBottom: "1.75rem",
-            lineHeight: 1.4,
+            letterSpacing: "0.08em",
+            lineHeight: 1.5,
+            margin: "0 0 2rem",
+            fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
           }}
         >
           ことばは、橋になる。
         </h1>
+
         <div
           style={{
             fontSize: "0.9rem",
-            color: C.inkLight,
-            lineHeight: 1.9,
-            letterSpacing: "0.03em",
+            color: C.ink,
+            lineHeight: 2,
+            letterSpacing: "0.04em",
+            fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
           }}
         >
-          <p style={{ margin: "0 0 1.25rem" }}>
+          <p style={{ margin: "0 0 1.5rem" }}>
             人は、同じ気持ちを持っていても、相手によって言葉を変えます。
             <br />
             上司には丁寧に、友人には気軽に、子どもにはやさしく。
             <br />
             そのたびに私たちは、言葉を「翻訳」しています。
           </p>
-          <p style={{ margin: "0 0 1.25rem" }}>これが、communicationの本質です。</p>
-          <p style={{ margin: "0 0 1.25rem" }}>
+          <p
+            style={{
+              margin: "0 0 1.5rem",
+              paddingLeft: "1rem",
+              borderLeft: `2px solid ${C.rule}`,
+              color: C.inkMid,
+              fontStyle: "italic",
+            }}
+          >
+            これが、communicationの本質です。
+          </p>
+          <p style={{ margin: "0 0 1.5rem" }}>
             このツールは、その翻訳を可視化します。
             <br />
             ひとつの文章が、受け取る人によってどう形を変えるか——
@@ -255,9 +309,20 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
             <br />
             相手の立場に立つこと。それが、真のcommunicationだと私たちは考えます。
           </p>
-          <p style={{ margin: "0 0 1.25rem" }}>
+          <p style={{ margin: "0 0 1.5rem" }}>
             そして「
-            <span style={{ fontWeight: 700, color: C.highlight }}>やさしい日本語</span>
+            <span
+              style={{
+                fontWeight: 700,
+                color: C.accent,
+                background: C.accentBg,
+                padding: "0 0.25rem",
+                borderRadius: "1px",
+                border: `1px solid ${C.accentBorder}`,
+              }}
+            >
+              やさしい日本語
+            </span>
             」。
             <br />
             日本には約300万人の外国人住民がいます。
@@ -272,27 +337,49 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
             communicationとは、ことばのトーンを合わせることで、人と人をつなぐことです。
           </p>
         </div>
-        <div style={{ marginTop: "2.25rem", display: "flex", justifyContent: "flex-end" }}>
+
+        <div
+          style={{
+            marginTop: "2.5rem",
+            paddingTop: "1.75rem",
+            borderTop: `1px solid ${C.rule}`,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between",
+            gap: "1rem",
+          }}
+        >
+          <span
+            style={{
+              fontSize: "0.6875rem",
+              color: C.inkLight,
+              letterSpacing: "0.1em",
+              textTransform: "uppercase",
+            }}
+          >
+            Japanese Style Transformer
+          </span>
           <button
             type="button"
             onClick={onClose}
             style={{
-              padding: "0.625rem 2rem",
+              padding: "0.625rem 2.25rem",
               fontSize: "0.875rem",
               fontWeight: 700,
-              letterSpacing: "0.06em",
+              letterSpacing: "0.08em",
               background: C.ink,
               color: "#FDFAF6",
               border: "none",
               borderRadius: "2px",
               cursor: "pointer",
               fontFamily: "inherit",
+              outline: "none",
             }}
           >
             使ってみる
           </button>
         </div>
-      </div>
+      </dialog>
     </div>
   );
 }
