@@ -669,7 +669,7 @@ export function StyleTransformer() {
               style={{
                 borderTop: `1px solid ${C.rule}`,
                 padding: "0.75rem 1.75rem",
-                background: C.bg,
+                background: C.panelBg,
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.5rem",
