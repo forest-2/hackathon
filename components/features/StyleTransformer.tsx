@@ -601,15 +601,15 @@ export function StyleTransformer() {
               overflowY: "auto",
               border: `1px solid ${C.rule}`,
               borderRadius: "4px",
-              background: C.bg,
+              background: C.panelBg,
               boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
+              overflow: "hidden",
             }}
           >
             <div
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
-                background: "#D4CEC6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -628,7 +628,7 @@ export function StyleTransformer() {
               >
                 原文
               </span>
-              <span style={{ fontSize: "0.6875rem", color: C.inkMid, letterSpacing: "0.04em" }}>
+              <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
                 {inputText.length} 文字
               </span>
             </div>
@@ -665,7 +665,7 @@ export function StyleTransformer() {
               style={{
                 borderTop: `1px solid ${C.rule}`,
                 padding: "0.75rem 1.75rem",
-                background: C.bg,
+                background: C.panelBg,
                 display: "flex",
                 flexDirection: "column",
                 gap: "0.5rem",
@@ -783,7 +783,6 @@ export function StyleTransformer() {
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
-                background: "#D4CEC6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
