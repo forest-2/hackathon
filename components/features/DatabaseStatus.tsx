@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type { DemoItem } from "@/types"
+import type { DemoItem } from "@/types";
 
 interface DatabaseStatusProps {
-  items: DemoItem[] | null
-  error: string | null
+  items: DemoItem[] | null;
+  error: string | null;
 }
 
 /**
@@ -29,7 +29,7 @@ export function DatabaseStatus({ items, error }: DatabaseStatusProps) {
           Supabase project is not paused.
         </p>
       </div>
-    )
+    );
   }
 
   if (!items || items.length === 0) {
@@ -47,7 +47,7 @@ export function DatabaseStatus({ items, error }: DatabaseStatusProps) {
           Run <code>supabase/seed.sql</code> in your Supabase dashboard to add demo rows.
         </p>
       </div>
-    )
+    );
   }
 
   return (
@@ -58,9 +58,7 @@ export function DatabaseStatus({ items, error }: DatabaseStatusProps) {
         borderRadius: "0.5rem",
       }}
     >
-      <h2 style={{ margin: "0 0 1rem", color: "var(--color-success)" }}>
-        ✓ Connected to Supabase
-      </h2>
+      <h2 style={{ margin: "0 0 1rem", color: "var(--color-success)" }}>✓ Connected to Supabase</h2>
       <ul style={{ margin: 0, padding: "0 0 0 1.25rem" }}>
         {items.map((item) => (
           <li key={item.id} style={{ marginBottom: "0.25rem" }}>
@@ -69,5 +67,5 @@ export function DatabaseStatus({ items, error }: DatabaseStatusProps) {
         ))}
       </ul>
     </div>
-  )
+  );
 }

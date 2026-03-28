@@ -3,4 +3,4 @@
  * Example: import type { DemoItem } from "@/types"
  */
 
-export type { DemoItem } from "./database"
+export type { DemoItem } from "./database";

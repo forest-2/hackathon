@@ -8,9 +8,9 @@
 
 // Template demo table — replace with your own types
 export interface DemoItem {
-  id: number
-  title: string
-  created_at: string // ISO 8601 timestamp
+  id: number;
+  title: string;
+  created_at: string; // ISO 8601 timestamp
 }
 
 // Add your project types below:

@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import { useEffect } from "react"
+import { useEffect } from "react";
 
 interface ErrorProps {
-  error: Error & { digest?: string }
-  reset: () => void
+  error: Error & { digest?: string };
+  reset: () => void;
 }
 
 /**
@@ -13,8 +13,8 @@ interface ErrorProps {
  */
 export default function Error({ error, reset }: ErrorProps) {
   useEffect(() => {
-    console.error("[Error boundary]", error)
-  }, [error])
+    console.error("[Error boundary]", error);
+  }, [error]);
 
   return (
     <main
@@ -49,5 +49,5 @@ export default function Error({ error, reset }: ErrorProps) {
         Try again
       </button>
     </main>
-  )
+  );
 }

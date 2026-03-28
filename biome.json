@@ -22,12 +22,7 @@
     }
   },
   "files": {
-    "ignore": [
-      "node_modules",
-      ".next",
-      "coverage",
-      "specs"
-    ]
+    "ignore": ["node_modules", ".next", "coverage", "specs"]
   },
   "javascript": {
     "globals": ["React"]

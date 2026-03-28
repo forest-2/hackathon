@@ -1,4 +1,4 @@
-import Link from "next/link"
+import Link from "next/link";
 
 /**
  * 404 — page not found handler.
@@ -34,5 +34,5 @@ export default function NotFound() {
         Back to home
       </Link>
     </main>
-  )
+  );
 }

@@ -1,18 +1,7 @@
-import type { NextRequest } from "next/server"
-import { updateSession } from "@/lib/supabase/middleware"
+import { type NextRequest, NextResponse } from "next/server";
 
-/**
- * Edge middleware — runs on every request before the page renders.
- * Refreshes the Supabase auth session so it stays current.
- *
- * To protect specific routes, add redirect logic here:
- *   const { data: { user } } = await supabase.auth.getUser()
- *   if (!user && request.nextUrl.pathname.startsWith('/dashboard')) {
- *     return NextResponse.redirect(new URL('/login', request.url))
- *   }
- */
-export async function middleware(request: NextRequest) {
-  return await updateSession(request)
+export function middleware(_request: NextRequest) {
+  return NextResponse.next();
 }
 
 export const config = {
@@ -26,4 +15,4 @@ export const config = {
      */
     "/((?!_next/static|_next/image|favicon.ico|sitemap.xml|robots.txt|.*\\.(?:svg|png|jpg|jpeg|gif|webp)$).*)",
   ],
-}
+};
