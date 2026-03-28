@@ -591,7 +591,16 @@ export function StyleTransformer() {
         </header>
 
         {/* 左右分割コンテンツ */}
-        <div style={{ flex: 1, display: "flex", overflow: "hidden", padding: "1.25rem", gap: 0 }}>
+        <div
+          style={{
+            flex: 1,
+            display: "flex",
+            overflow: "hidden",
+            padding: "1.25rem",
+            gap: 0,
+            background: "#DEDAD4",
+          }}
+        >
           {/* 左パネル：入力 */}
           <section
             style={{
