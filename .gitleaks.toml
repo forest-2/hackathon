@@ -1,0 +1,9 @@
+[allowlist]
+description = "Allow placeholder values in example files and documentation"
+
+paths = [
+  '''^\.env\.example$''',
+  '''^docs/.*\.md$''',
+  '''^specs/.*\.md$''',
+  '''^README\.md$''',
+]
