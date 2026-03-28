@@ -7,11 +7,11 @@ export const metadata: Metadata = {
     "日本語の文体を瞬時に変換。上司向け・恋人向け・やさしい日本語など13種類のスタイルに対応。",
   icons: {
     icon: [
-      { url: "/forest-2.png", sizes: "32x32", type: "image/png" },
-      { url: "/forest-2.png", sizes: "96x96", type: "image/png" },
-      { url: "/forest-2.png", sizes: "192x192", type: "image/png" },
+      { url: "/forest-2_2.png", sizes: "32x32", type: "image/png" },
+      { url: "/forest-2_2.png", sizes: "96x96", type: "image/png" },
+      { url: "/forest-2_2.png", sizes: "192x192", type: "image/png" },
     ],
-    apple: { url: "/forest-2.png", sizes: "180x180", type: "image/png" },
+    apple: { url: "/forest-2_2.png", sizes: "180x180", type: "image/png" },
   },
 };
 
