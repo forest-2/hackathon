@@ -608,7 +608,7 @@ export function StyleTransformer() {
             overflow: "hidden",
             padding: "1.25rem",
             gap: "0",
-            background: "#DEDAD4",
+            background: "#B8B0A6",
           }}
         >
           {/* Col 1: 原文 (34%) */}
@@ -646,7 +646,7 @@ export function StyleTransformer() {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: C.inkLight, marginRight: "0.5rem", fontWeight: 400 }}>
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
                   01
                 </span>
                 原文
@@ -787,7 +787,7 @@ export function StyleTransformer() {
                   textTransform: "uppercase",
                 }}
               >
-                <span style={{ color: C.inkLight, marginRight: "0.5rem", fontWeight: 400 }}>
+                <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
                   02
                 </span>
                 文体を選ぶ
@@ -861,7 +861,7 @@ export function StyleTransformer() {
                     textTransform: "uppercase",
                   }}
                 >
-                  <span style={{ color: C.inkLight, marginRight: "0.5rem", fontWeight: 400 }}>
+                  <span style={{ color: C.inkMid, marginRight: "0.5rem", fontWeight: 400 }}>
                     03
                   </span>
                   変換後
