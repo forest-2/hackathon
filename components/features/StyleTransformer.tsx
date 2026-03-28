@@ -11,13 +11,18 @@ type Style = {
 
 // ---- 例文リスト（ここを編集して例文を追加・変更できます） ----
 const EXAMPLES: string[] = [
-  "明日の会議に少し遅れそうです。",
-  "この件について一度相談させてください。",
-  "先日はありがとうございました。",
+  "君、怒りすぎだよ。もっと頭使えよ〜。",
+  "そんなこと言わないでよ〜。",
+  "ちょっと待って、今それどころじゃないんだけど。",
+  "なんでいつも私だけこんな目に遭うんだろう。",
+  "あの人のこと、正直よくわからなくなってきた。",
+  "明日の会議、絶対うまくいく気がしない。",
+  "もうやだ、全部投げ出したい。",
   "体調が悪いので今日は早退したいです。",
-  "プロジェクトの進捗はどうですか？",
+  "この件について一度相談させてください。",
   "もう少し時間をいただけると助かります。",
 ];
+const DEFAULT_INPUT = EXAMPLES[0] ?? "";
 
 const STYLES: Style[] = [
   { id: "boss", label: "上司向け", prompt: "敬語を使った丁寧なビジネス文体" },
@@ -420,7 +425,7 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
 }
 
 export function StyleTransformer() {
-  const [inputText, setInputText] = useState("");
+  const [inputText, setInputText] = useState(DEFAULT_INPUT);
   const [outputText, setOutputText] = useState("");
   const [activeStyle, setActiveStyle] = useState<string | null>(null);
   const [isLoading, setIsLoading] = useState(false);
