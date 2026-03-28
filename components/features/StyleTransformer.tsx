@@ -370,11 +370,13 @@ export function StyleTransformer() {
           >
             <div
               style={{
-                padding: "1rem 1.75rem 0.75rem",
+                padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
+                height: "52px",
+                flexShrink: 0,
               }}
             >
               <span
@@ -522,12 +524,13 @@ export function StyleTransformer() {
           >
             <div
               style={{
-                padding: "1rem 1.75rem 0.75rem",
+                padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                minHeight: "52px",
+                height: "52px",
+                flexShrink: 0,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
@@ -638,21 +641,6 @@ export function StyleTransformer() {
                 </p>
               )}
             </div>
-
-            {hasOutput && (
-              <div
-                style={{
-                  borderTop: `1px solid ${C.rule}`,
-                  padding: "0.625rem 1.75rem",
-                  display: "flex",
-                  justifyContent: "flex-end",
-                }}
-              >
-                <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
-                  {outputText.length} 文字
-                </span>
-              </div>
-            )}
           </section>
         </div>
       </main>
