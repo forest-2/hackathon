@@ -58,13 +58,13 @@ const C = {
   inkMid: "#6B6560",
   inkLight: "#B8B3AC",
   rule: "#E2DDD7",
-  accent: "#C0392B",
-  accentBg: "#FFF0EE",
-  accentBorder: "#E8B9A8",
+  accent: "#1B5E20",
+  accentBg: "#F0F7F0",
+  accentBorder: "#A5C8A8",
   highlight: "#1B5E20",
   highlightBg: "#F0F7F0",
   panelBg: "#FFFFFF",
-  cursor: "#C0392B",
+  cursor: "#1B5E20",
 } as const;
 
 async function fetchTransform(
@@ -214,9 +214,9 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
         style={{
           background: "#FDFAF6",
           borderRadius: "2px",
-          maxWidth: "580px",
+          maxWidth: "560px",
           width: "100%",
-          padding: "3rem 3rem 2.5rem",
+          padding: "2rem 2.5rem 1.75rem",
           boxShadow: "0 2px 8px rgba(26,24,20,0.08), 0 24px 64px rgba(26,24,20,0.22)",
           position: "relative",
           border: `1px solid ${C.rule}`,
@@ -254,19 +254,17 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
         </button>
 
         {/* Decorative accent rule */}
-        <div
-          style={{ width: "2rem", height: "2px", background: C.accent, marginBottom: "1.5rem" }}
-        />
+        <div style={{ width: "2rem", height: "2px", background: C.accent, marginBottom: "1rem" }} />
 
         <h1
           id="modal-title"
           style={{
-            fontSize: "1.375rem",
+            fontSize: "1.25rem",
             fontWeight: 700,
             color: C.ink,
             letterSpacing: "0.08em",
-            lineHeight: 1.5,
-            margin: "0 0 2rem",
+            lineHeight: 1.4,
+            margin: "0 0 1.25rem",
             fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
           }}
         >
@@ -275,14 +273,14 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
 
         <div
           style={{
-            fontSize: "0.9rem",
+            fontSize: "0.875rem",
             color: C.ink,
-            lineHeight: 2,
-            letterSpacing: "0.04em",
+            lineHeight: 1.8,
+            letterSpacing: "0.03em",
             fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
           }}
         >
-          <p style={{ margin: "0 0 1.5rem" }}>
+          <p style={{ margin: "0 0 1rem" }}>
             人は、同じ気持ちを持っていても、相手によって言葉を変えます。
             <br />
             上司には丁寧に、友人には気軽に、子どもにはやさしく。
@@ -291,7 +289,7 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
           </p>
           <p
             style={{
-              margin: "0 0 1.5rem",
+              margin: "0 0 1rem",
               paddingLeft: "1rem",
               borderLeft: `2px solid ${C.rule}`,
               color: C.inkMid,
@@ -300,7 +298,7 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
           >
             これが、communicationの本質です。
           </p>
-          <p style={{ margin: "0 0 1.5rem" }}>
+          <p style={{ margin: "0 0 1rem" }}>
             このツールは、その翻訳を可視化します。
             <br />
             ひとつの文章が、受け取る人によってどう形を変えるか——
@@ -309,7 +307,7 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
             <br />
             相手の立場に立つこと。それが、真のcommunicationだと私たちは考えます。
           </p>
-          <p style={{ margin: "0 0 1.5rem" }}>
+          <p style={{ margin: "0 0 1rem" }}>
             そして「
             <span
               style={{
@@ -340,8 +338,8 @@ function ConceptModal({ onClose }: { onClose: () => void }) {
 
         <div
           style={{
-            marginTop: "2.5rem",
-            paddingTop: "1.75rem",
+            marginTop: "1.5rem",
+            paddingTop: "1.25rem",
             borderTop: `1px solid ${C.rule}`,
             display: "flex",
             alignItems: "center",
