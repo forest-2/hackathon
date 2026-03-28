@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 
 type Style = {
   id: string;
@@ -44,6 +44,46 @@ const C = {
   cursor: "#C0392B",
 } as const;
 
+async function readStream(
+  reader: ReadableStreamDefaultReader<Uint8Array>,
+  onChunk: (text: string) => void,
+) {
+  const decoder = new TextDecoder();
+  let accumulated = "";
+  while (true) {
+    const { done, value } = await reader.read();
+    if (done) break;
+    accumulated += decoder.decode(value, { stream: true });
+    onChunk(accumulated);
+  }
+}
+
+function getButtonColors(
+  isActive: boolean,
+  highlight: boolean,
+  hovered: boolean,
+  disabled: boolean,
+): React.CSSProperties {
+  if (isActive && highlight) {
+    return { borderColor: C.highlight, background: C.highlight, color: "#fff" };
+  }
+  if (isActive) {
+    return { borderColor: C.accent, background: C.accent, color: "#fff" };
+  }
+  if (highlight) {
+    return {
+      borderColor: hovered ? C.highlight : C.rule,
+      background: hovered ? C.highlightBg : C.panelBg,
+      color: C.highlight,
+    };
+  }
+  return {
+    borderColor: hovered ? C.inkMid : C.rule,
+    background: hovered && !disabled ? C.bg : C.panelBg,
+    color: hovered && !disabled ? C.ink : C.inkMid,
+  };
+}
+
 function StreamCursor() {
   const [visible, setVisible] = useState(true);
   useEffect(() => {
@@ -78,42 +118,7 @@ function StyleButton({
   onClick: () => void;
 }) {
   const [hovered, setHovered] = useState(false);
-
-  const base: React.CSSProperties = {
-    padding: "0.45rem 1.1rem",
-    fontSize: "0.8125rem",
-    fontWeight: isActive ? 700 : 400,
-    letterSpacing: "0.02em",
-    border: "1.5px solid",
-    borderRadius: "9999px",
-    cursor: disabled && !isActive ? "not-allowed" : "pointer",
-    opacity: disabled && !isActive ? 0.45 : 1,
-    transition: "all 0.18s ease",
-    whiteSpace: "nowrap" as const,
-    lineHeight: 1,
-    outline: "none",
-    fontFamily: "inherit",
-    userSelect: "none" as const,
-  };
-
-  let colors: React.CSSProperties;
-  if (isActive && style.highlight) {
-    colors = { borderColor: C.highlight, background: C.highlight, color: "#fff" };
-  } else if (isActive) {
-    colors = { borderColor: C.accent, background: C.accent, color: "#fff" };
-  } else if (style.highlight) {
-    colors = {
-      borderColor: hovered ? C.highlight : C.rule,
-      background: hovered ? C.highlightBg : C.panelBg,
-      color: C.highlight,
-    };
-  } else {
-    colors = {
-      borderColor: hovered ? C.inkMid : C.rule,
-      background: hovered && !disabled ? C.bg : C.panelBg,
-      color: hovered && !disabled ? C.ink : C.inkMid,
-    };
-  }
+  const colors = getButtonColors(isActive, !!style.highlight, hovered, disabled);
 
   return (
     <button
@@ -122,7 +127,23 @@ function StyleButton({
       disabled={disabled && !isActive}
       onMouseEnter={() => setHovered(true)}
       onMouseLeave={() => setHovered(false)}
-      style={{ ...base, ...colors }}
+      style={{
+        padding: "0.45rem 1.1rem",
+        fontSize: "0.8125rem",
+        fontWeight: isActive ? 700 : 400,
+        letterSpacing: "0.02em",
+        border: "1.5px solid",
+        borderRadius: "9999px",
+        cursor: disabled && !isActive ? "not-allowed" : "pointer",
+        opacity: disabled && !isActive ? 0.45 : 1,
+        transition: "all 0.18s ease",
+        whiteSpace: "nowrap",
+        lineHeight: 1,
+        outline: "none",
+        fontFamily: "inherit",
+        userSelect: "none",
+        ...colors,
+      }}
     >
       {style.label}
     </button>
@@ -137,17 +158,6 @@ export function StyleTransformer() {
   const [copied, setCopied] = useState(false);
   const outputRef = useRef<HTMLDivElement>(null);
 
-  async function streamResponse(reader: ReadableStreamDefaultReader<Uint8Array>) {
-    const decoder = new TextDecoder();
-    let accumulated = "";
-    while (true) {
-      const { done, value } = await reader.read();
-      if (done) break;
-      accumulated += decoder.decode(value, { stream: true });
-      setOutputText(accumulated);
-    }
-  }
-
   async function handleStyleClick(style: Style) {
     if (!inputText.trim()) return;
     setActiveStyle(style.id);
@@ -158,7 +168,11 @@ export function StyleTransformer() {
       const res = await fetch("/api/transform", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: inputText, styleLabel: style.label, stylePrompt: style.prompt }),
+        body: JSON.stringify({
+          text: inputText,
+          styleLabel: style.label,
+          stylePrompt: style.prompt,
+        }),
       });
 
       if (!res.ok || !res.body) {
@@ -166,7 +180,7 @@ export function StyleTransformer() {
         return;
       }
 
-      await streamResponse(res.body.getReader());
+      await readStream(res.body.getReader(), setOutputText);
     } catch {
       setOutputText("通信エラーが発生しました。");
     } finally {
@@ -175,7 +189,6 @@ export function StyleTransformer() {
   }
 
   function handleCopy() {
-    if (!outputText) return;
     navigator.clipboard.writeText(outputText).then(() => {
       setCopied(true);
       setTimeout(() => setCopied(false), 2000);
@@ -252,15 +265,32 @@ export function StyleTransformer() {
           }}
         >
           <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
-            <span style={{ fontSize: "1rem", fontWeight: 700, color: C.ink, letterSpacing: "0.04em" }}>
+            <span
+              style={{ fontSize: "1rem", fontWeight: 700, color: C.ink, letterSpacing: "0.04em" }}
+            >
               文体変換
             </span>
-            <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.06em", paddingTop: "1px" }}>
+            <span
+              style={{
+                fontSize: "0.6875rem",
+                color: C.inkLight,
+                letterSpacing: "0.06em",
+                paddingTop: "1px",
+              }}
+            >
               Japanese Style Transformer
             </span>
           </div>
           {isLoading && (
-            <div style={{ display: "flex", alignItems: "center", gap: "0.375rem", fontSize: "0.75rem", color: C.accent }}>
+            <div
+              style={{
+                display: "flex",
+                alignItems: "center",
+                gap: "0.375rem",
+                fontSize: "0.75rem",
+                color: C.accent,
+              }}
+            >
               <span
                 style={{
                   width: "6px",
@@ -296,7 +326,15 @@ export function StyleTransformer() {
                 justifyContent: "space-between",
               }}
             >
-              <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", color: C.inkMid, textTransform: "uppercase" }}>
+              <span
+                style={{
+                  fontSize: "0.6875rem",
+                  fontWeight: 700,
+                  letterSpacing: "0.12em",
+                  color: C.inkMid,
+                  textTransform: "uppercase",
+                }}
+              >
                 原文
               </span>
               <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
@@ -309,7 +347,9 @@ export function StyleTransformer() {
                 id="input"
                 value={inputText}
                 onChange={(e) => setInputText(e.target.value)}
-                placeholder={"ここに変換したい文章を入力してください…\n\n例：「明日の会議に少し遅れそうです」"}
+                placeholder={
+                  "ここに変換したい文章を入力してください…\n\n例：「明日の会議に少し遅れそうです」"
+                }
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -337,7 +377,15 @@ export function StyleTransformer() {
                 background: C.panelBg,
               }}
             >
-              <div style={{ fontSize: "0.625rem", letterSpacing: "0.14em", color: C.inkLight, textTransform: "uppercase", marginBottom: "0.75rem" }}>
+              <div
+                style={{
+                  fontSize: "0.625rem",
+                  letterSpacing: "0.14em",
+                  color: C.inkLight,
+                  textTransform: "uppercase",
+                  marginBottom: "0.75rem",
+                }}
+              >
                 変換スタイルを選択
               </div>
               <div style={{ display: "flex", flexWrap: "wrap", gap: "0.5rem" }}>
@@ -377,7 +425,15 @@ export function StyleTransformer() {
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
-                <span style={{ fontSize: "0.6875rem", fontWeight: 700, letterSpacing: "0.12em", color: C.inkMid, textTransform: "uppercase" }}>
+                <span
+                  style={{
+                    fontSize: "0.6875rem",
+                    fontWeight: 700,
+                    letterSpacing: "0.12em",
+                    color: C.inkMid,
+                    textTransform: "uppercase",
+                  }}
+                >
                   変換後
                 </span>
                 {activeStyleObj && (
@@ -419,7 +475,15 @@ export function StyleTransformer() {
               )}
             </div>
 
-            <div ref={outputRef} style={{ flex: 1, padding: "1.5rem 1.75rem", overflowY: "auto", position: "relative" }}>
+            <div
+              ref={outputRef}
+              style={{
+                flex: 1,
+                padding: "1.5rem 1.75rem",
+                overflowY: "auto",
+                position: "relative",
+              }}
+            >
               {!hasOutput && !isLoading && (
                 <div
                   style={{
@@ -435,14 +499,34 @@ export function StyleTransformer() {
                   }}
                 >
                   <div style={{ width: "48px", height: "1px", background: C.rule }} />
-                  <p style={{ fontSize: "0.8125rem", color: C.inkLight, letterSpacing: "0.06em", lineHeight: 2, textAlign: "center", margin: 0 }}>
-                    原文を入力し<br />スタイルを選択してください
+                  <p
+                    style={{
+                      fontSize: "0.8125rem",
+                      color: C.inkLight,
+                      letterSpacing: "0.06em",
+                      lineHeight: 2,
+                      textAlign: "center",
+                      margin: 0,
+                    }}
+                  >
+                    原文を入力し
+                    <br />
+                    スタイルを選択してください
                   </p>
                   <div style={{ width: "48px", height: "1px", background: C.rule }} />
                 </div>
               )}
               {(hasOutput || isLoading) && (
-                <p style={{ fontSize: "1rem", lineHeight: 1.85, color: C.ink, margin: 0, whiteSpace: "pre-wrap", wordBreak: "break-all" }}>
+                <p
+                  style={{
+                    fontSize: "1rem",
+                    lineHeight: 1.85,
+                    color: C.ink,
+                    margin: 0,
+                    whiteSpace: "pre-wrap",
+                    wordBreak: "break-all",
+                  }}
+                >
                   {outputText}
                   {isLoading && <StreamCursor />}
                 </p>
@@ -450,7 +534,14 @@ export function StyleTransformer() {
             </div>
 
             {hasOutput && (
-              <div style={{ borderTop: `1px solid ${C.rule}`, padding: "0.625rem 1.75rem", display: "flex", justifyContent: "flex-end" }}>
+              <div
+                style={{
+                  borderTop: `1px solid ${C.rule}`,
+                  padding: "0.625rem 1.75rem",
+                  display: "flex",
+                  justifyContent: "flex-end",
+                }}
+              >
                 <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
                   {outputText.length} 文字
                 </span>

@@ -11,7 +11,7 @@ interface ErrorProps {
  * Global error boundary — catches unhandled errors in the React tree.
  * Must be a Client Component.
  */
-export default function Error({ error, reset }: ErrorProps) {
+export default function AppError({ error, reset }: ErrorProps) {
   useEffect(() => {
     console.error("[Error boundary]", error);
   }, [error]);
