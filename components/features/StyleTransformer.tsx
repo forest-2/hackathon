@@ -595,21 +595,26 @@ export function StyleTransformer() {
         </header>
 
         {/* 左右分割コンテンツ */}
-        <div style={{ flex: 1, display: "flex", overflow: "hidden" }}>
+        <div style={{ flex: 1, display: "flex", overflow: "hidden", padding: "1.25rem", gap: 0 }}>
           {/* 左パネル：入力 */}
           <section
             style={{
               flex: 1,
               display: "flex",
               flexDirection: "column",
-              borderRight: `1px solid ${C.rule}`,
               overflowY: "auto",
+              border: `1px solid ${C.rule}`,
+              borderRadius: "4px",
+              background: C.bg,
+              boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
+              overflow: "hidden",
             }}
           >
             <div
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
+                background: "#D4CEC6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -628,7 +633,7 @@ export function StyleTransformer() {
               >
                 原文
               </span>
-              <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
+              <span style={{ fontSize: "0.6875rem", color: C.inkMid, letterSpacing: "0.04em" }}>
                 {inputText.length} 文字
               </span>
             </div>
@@ -748,6 +753,23 @@ export function StyleTransformer() {
             </div>
           </section>
 
+          {/* パネル間 ▶︎ アイコン */}
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              width: "2rem",
+              flexShrink: 0,
+              color: C.accent,
+              fontSize: "0.75rem",
+              pointerEvents: "none",
+              userSelect: "none",
+            }}
+          >
+            ▶
+          </div>
+
           {/* 右パネル：出力 */}
           <section
             style={{
@@ -755,8 +777,10 @@ export function StyleTransformer() {
               display: "flex",
               flexDirection: "column",
               overflow: "hidden",
-              background: hasOutput || isLoading ? C.panelBg : C.bg,
-              transition: "background 0.3s ease",
+              background: C.bg,
+              border: `1px solid ${C.rule}`,
+              borderRadius: "4px",
+              boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
             }}
             aria-live="polite"
           >
@@ -764,6 +788,7 @@ export function StyleTransformer() {
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
+                background: "#D4CEC6",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
