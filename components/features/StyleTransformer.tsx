@@ -633,7 +633,7 @@ export function StyleTransformer() {
               >
                 原文
               </span>
-              <span style={{ fontSize: "0.6875rem", color: C.inkLight, letterSpacing: "0.04em" }}>
+              <span style={{ fontSize: "0.6875rem", color: C.inkMid, letterSpacing: "0.04em" }}>
                 {inputText.length} 文字
               </span>
             </div>
