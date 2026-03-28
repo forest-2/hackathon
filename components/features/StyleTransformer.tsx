@@ -278,6 +278,8 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             lineHeight: 1.4,
             margin: "0 0 1.25rem",
             fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
+            animation: "textWipeIn 0.4s ease both",
+            animationDelay: "0.15s",
           }}
         >
           ことばは、橋になる。
@@ -292,7 +294,13 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             fontFamily: "'Noto Serif JP', 'Hiragino Mincho ProN', 'Yu Mincho', serif",
           }}
         >
-          <p style={{ margin: "0 0 1rem" }}>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.25s",
+            }}
+          >
             人は、同じ気持ちを持っていても、相手によって言葉を変えます。
             <br />
             上司には丁寧に、友人には気軽に、子どもにはやさしく。
@@ -306,11 +314,19 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
               borderLeft: `2px solid ${C.rule}`,
               color: C.inkMid,
               fontStyle: "italic",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.38s",
             }}
           >
             これが、communicationの本質です。
           </p>
-          <p style={{ margin: "0 0 1rem" }}>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.5s",
+            }}
+          >
             このツールは、その翻訳を可視化します。
             <br />
             ひとつの文章が、受け取る人によってどう形を変えるか——
@@ -319,7 +335,13 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             <br />
             相手の立場に立つこと。それが、真のcommunicationだと私たちは考えます。
           </p>
-          <p style={{ margin: "0 0 1rem" }}>
+          <p
+            style={{
+              margin: "0 0 1rem",
+              animation: "textWipeIn 0.4s ease both",
+              animationDelay: "0.65s",
+            }}
+          >
             そして「
             <span
               style={{
@@ -343,7 +365,7 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             <br />
             このツールは、それをワンクリックで実現します。
           </p>
-          <p style={{ margin: 0 }}>
+          <p style={{ margin: 0, animation: "textWipeIn 0.4s ease both", animationDelay: "0.8s" }}>
             communicationとは、ことばのトーンを合わせることで、人と人をつなぐことです。
           </p>
         </div>
@@ -357,6 +379,8 @@ function ConceptModal({ onClose, closing }: { onClose: () => void; closing: bool
             alignItems: "center",
             justifyContent: "space-between",
             gap: "1rem",
+            animation: "textWipeIn 0.4s ease both",
+            animationDelay: "0.95s",
           }}
         >
           <span
@@ -866,6 +890,10 @@ export function StyleTransformer() {
         @keyframes modalFadeOut {
           from { opacity: 1; filter: blur(0px); transform: scale(1); }
           to   { opacity: 0; filter: blur(16px); transform: scale(1.06); }
+        }
+        @keyframes textWipeIn {
+          from { opacity: 0; transform: translateY(10px); }
+          to   { opacity: 1; transform: translateY(0); }
         }
         textarea::placeholder { color: #B8B3AC; font-style: italic; }
         textarea:focus { outline: none; }
