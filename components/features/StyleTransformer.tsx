@@ -614,7 +614,7 @@ export function StyleTransformer() {
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
-                background: C.bg,
+                background: C.panelBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
@@ -788,7 +788,7 @@ export function StyleTransformer() {
               style={{
                 padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
-                background: C.bg,
+                background: C.panelBg,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
