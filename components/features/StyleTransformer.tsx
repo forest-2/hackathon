@@ -66,6 +66,21 @@ const C = {
   cursor: "#C0392B",
 } as const;
 
+async function fetchTransform(
+  text: string,
+  style: Style,
+  onChunk: (text: string) => void,
+): Promise<string | null> {
+  const res = await fetch("/api/transform", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, styleLabel: style.label, stylePrompt: style.prompt }),
+  });
+  if (!res.ok || !res.body) return "エラーが発生しました。";
+  await readStream(res.body.getReader(), onChunk);
+  return null;
+}
+
 async function readStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   onChunk: (text: string) => void,
@@ -185,24 +200,9 @@ export function StyleTransformer() {
     setActiveStyle(style.id);
     setIsLoading(true);
     setOutputText("");
-
     try {
-      const res = await fetch("/api/transform", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: inputText,
-          styleLabel: style.label,
-          stylePrompt: style.prompt,
-        }),
-      });
-
-      if (!res.ok || !res.body) {
-        setOutputText("エラーが発生しました。");
-        return;
-      }
-
-      await readStream(res.body.getReader(), setOutputText);
+      const err = await fetchTransform(inputText, style, setOutputText);
+      if (err) setOutputText(err);
     } catch {
       setOutputText("通信エラーが発生しました。");
     } finally {
@@ -303,28 +303,57 @@ export function StyleTransformer() {
               Japanese Style Transformer
             </span>
           </div>
-          {isLoading && (
-            <div
+          <div style={{ display: "flex", alignItems: "center", gap: "1rem" }}>
+            {isLoading && (
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: "0.375rem",
+                  fontSize: "0.75rem",
+                  color: C.accent,
+                }}
+              >
+                <span
+                  style={{
+                    width: "6px",
+                    height: "6px",
+                    borderRadius: "50%",
+                    background: C.accent,
+                    animation: "pulse 1s ease-in-out infinite",
+                  }}
+                />
+                生成中
+              </div>
+            )}
+            <a
+              href="https://github.com/forest-2/hackathon"
+              target="_blank"
+              rel="noopener noreferrer"
               style={{
                 display: "flex",
                 alignItems: "center",
-                gap: "0.375rem",
-                fontSize: "0.75rem",
-                color: C.accent,
+                gap: "0.4rem",
+                textDecoration: "none",
               }}
             >
+              <img
+                src="/forest-2.png"
+                alt="forest logo"
+                style={{ height: "36px", width: "36px", objectFit: "contain" }}
+              />
               <span
                 style={{
-                  width: "6px",
-                  height: "6px",
-                  borderRadius: "50%",
-                  background: C.accent,
-                  animation: "pulse 1s ease-in-out infinite",
+                  fontSize: "0.8125rem",
+                  fontWeight: 700,
+                  color: C.ink,
+                  letterSpacing: "0.04em",
                 }}
-              />
-              生成中
-            </div>
-          )}
+              >
+                forest-2
+              </span>
+            </a>
+          </div>
         </header>
 
         {/* 左右分割コンテンツ */}
