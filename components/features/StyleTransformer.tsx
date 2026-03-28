@@ -341,12 +341,13 @@ export function StyleTransformer() {
           >
             <div
               style={{
-                padding: "1rem 1.75rem 0.75rem",
+                padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                minHeight: "52px",
+                height: "52px",
+                flexShrink: 0,
               }}
             >
               <span
@@ -494,12 +495,13 @@ export function StyleTransformer() {
           >
             <div
               style={{
-                padding: "1rem 1.75rem 0.75rem",
+                padding: "0 1.75rem",
                 borderBottom: `1px solid ${C.rule}`,
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "space-between",
-                minHeight: "52px",
+                height: "52px",
+                flexShrink: 0,
               }}
             >
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
