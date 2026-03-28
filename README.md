@@ -11,7 +11,7 @@
 このプロダクトは **[全日本AIハッカソン](https://www.aifestival.jp/hackathon)（2026年3月28日開催）** にて、**3時間**で制作しました。
 
 - **チーム：** [@kanare-dev](https://github.com/kanare-dev) / [@omizu-k](https://github.com/omizu-k)
-- **開発：** [Claude Code](https://claude.ai/claude-code) を活用
+- **開発：** [Claude Code](https://claude.ai/claude-code) + [v0](https://v0.dev) MCP を活用
 - **テーマ：** 当日発表。テーマは **「communication」**
 
 ことばのトーンを相手に合わせることが、真のcommunicationだという思想のもと、このツールを設計しました。
