@@ -324,7 +324,7 @@ export function StyleTransformer() {
               display: "flex",
               flexDirection: "column",
               borderRight: `1px solid ${C.rule}`,
-              overflow: "hidden",
+              overflowY: "auto",
             }}
           >
             <div
@@ -352,7 +352,7 @@ export function StyleTransformer() {
               </span>
             </div>
 
-            <div style={{ flex: 1, position: "relative", overflow: "hidden" }}>
+            <div style={{ flex: 1, minHeight: "140px", position: "relative", overflow: "hidden" }}>
               <textarea
                 id="input"
                 value={inputText}
