@@ -66,6 +66,21 @@ const C = {
   cursor: "#C0392B",
 } as const;
 
+async function fetchTransform(
+  text: string,
+  style: Style,
+  onChunk: (text: string) => void,
+): Promise<string | null> {
+  const res = await fetch("/api/transform", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ text, styleLabel: style.label, stylePrompt: style.prompt }),
+  });
+  if (!res.ok || !res.body) return "エラーが発生しました。";
+  await readStream(res.body.getReader(), onChunk);
+  return null;
+}
+
 async function readStream(
   reader: ReadableStreamDefaultReader<Uint8Array>,
   onChunk: (text: string) => void,
@@ -185,24 +200,9 @@ export function StyleTransformer() {
     setActiveStyle(style.id);
     setIsLoading(true);
     setOutputText("");
-
     try {
-      const res = await fetch("/api/transform", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          text: inputText,
-          styleLabel: style.label,
-          stylePrompt: style.prompt,
-        }),
-      });
-
-      if (!res.ok || !res.body) {
-        setOutputText("エラーが発生しました。");
-        return;
-      }
-
-      await readStream(res.body.getReader(), setOutputText);
+      const err = await fetchTransform(inputText, style, setOutputText);
+      if (err) setOutputText(err);
     } catch {
       setOutputText("通信エラーが発生しました。");
     } finally {
@@ -337,7 +337,6 @@ export function StyleTransformer() {
                 textDecoration: "none",
               }}
             >
-              {/* biome-ignore lint/a11y/useImgElement: decorative logo */}
               <img
                 src="/forest-2.png"
                 alt="forest logo"
