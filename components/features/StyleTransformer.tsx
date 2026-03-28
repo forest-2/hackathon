@@ -12,13 +12,9 @@ type Style = {
 // ---- 例文リスト（ここを編集して例文を追加・変更できます） ----
 const EXAMPLES: string[] = [
   "今日めっちゃいいことあった！聞いて聞いて！",
-  "ちょっと待って、今それどころじゃないんだけど。",
-  "あの映画、思ってたより全然よかった。",
   "君、怒りすぎだよ。",
-  "そんなこと言わないでよ。",
   "なんかうまくいってる気がしない。どうしよう。",
   "体調が悪いので今日は早退したいです。",
-  "この件について一度相談させてください。",
   "もう少し時間をいただけると助かります。",
 ];
 const DEFAULT_INPUT = EXAMPLES[0] ?? "";
@@ -607,7 +603,6 @@ export function StyleTransformer() {
               borderRadius: "4px",
               background: C.bg,
               boxShadow: "0 1px 4px rgba(26,24,20,0.06)",
-              overflow: "hidden",
             }}
           >
             <div
